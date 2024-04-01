@@ -3,6 +3,7 @@ import { Lato } from "next/font/google";
 import "./globals.css";
 import Image from "next/image";
 import background from "../../public/background.jpg";
+import { Meteors } from "@/components/ui/Meteors";
 
 const lato = Lato({ subsets: ["latin"], weight: ["100", "300", "400", "700", "900"] });
 
@@ -20,6 +21,9 @@ const RootLayout = ({
     <html lang="en">
       <body className={lato.className}>
         <div className="relative w-full">
+          <div className="absolute w-screen overflow-hidden h-screen">
+            <Meteors number={20} />
+          </div>
           <div className="absolute -z-10 w-full">
             <Image src={background} alt="Background Image" className="w-screen h-screen object-cover" priority></Image>
           </div>
