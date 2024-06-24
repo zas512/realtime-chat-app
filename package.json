@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@material-tailwind/react": "^2.1.9",
+    "@million/lint": "^1.0.0-rc.26",
     "@next-auth/upstash-redis-adapter": "^3.0.4",
     "@upstash/redis": "^1.29.0",
     "class-variance-authority": "^0.7.0",
