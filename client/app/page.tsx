@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api, setAuthToken } from "../services/api";
 import { createSocket } from "../lib/socket";
@@ -30,7 +29,6 @@ export default function Page() {
   useEffect(() => {
     const storedUser = localStorage.getItem("chat-user");
     const storedToken = localStorage.getItem("chat-token");
-
     if (storedUser && storedToken) {
       const parsedUser = JSON.parse(storedUser) as UserDTO;
       setUser(parsedUser);
@@ -60,12 +58,9 @@ export default function Page() {
 
   useEffect(() => {
     if (!token) return;
-
     const socket = createSocket();
     socketRef.current = socket;
-
     socket.on(SocketEvents.MESSAGE, addMessageToState);
-
     return () => {
       socket.off(SocketEvents.MESSAGE, addMessageToState);
       socket.disconnect();
@@ -76,7 +71,6 @@ export default function Page() {
   useEffect(() => {
     const socket = socketRef.current;
     if (!socket || !activeChatId) return;
-
     socket.emit(SocketEvents.JOIN, activeChatId);
     return () => {
       socket.emit(SocketEvents.LEAVE, activeChatId);
@@ -113,7 +107,6 @@ export default function Page() {
     setLoading(true);
     setError(null);
     const url = mode === "login" ? "/auth/login" : "/auth/register";
-
     try {
       const response = await api.post(url, values);
       const { user: authUser, token: authToken } = response.data;
@@ -146,20 +139,17 @@ export default function Page() {
 
   const handleSend = async (content: string) => {
     if (!activeChatId || !user) return;
-
     try {
       const response = await api.post<MessageDTO>("/chats/message", {
         chatId: activeChatId,
         content
       });
       const sentMessage = response.data;
-
       setMessages((current) => {
         if (current.some((message) => message._id === sentMessage._id))
           return current;
         return [...current, sentMessage];
       });
-
       socketRef.current?.emit(SocketEvents.MESSAGE, sentMessage);
     } catch (err) {
       setError("Unable to send message.");

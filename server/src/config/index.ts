@@ -1,3 +1,3 @@
 export const config = {
-  jwtSecret: process.env.JWT_SECRET || 'replace_me',
-}
+  jwtSecret: process.env.JWT_SECRET || "replace_me"
+};

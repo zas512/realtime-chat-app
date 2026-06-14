@@ -1,17 +1,21 @@
-import type { UserDTO } from '../../shared/types'
+import type { UserDTO } from "../../shared/types";
 
 type Props = {
-  user: UserDTO
-  onLogout: () => void
-}
+  user: UserDTO;
+  onLogout: () => void;
+};
 
-export default function Header({ user, onLogout }: Props) {
+export default function Header({ user, onLogout }: Readonly<Props>) {
   return (
     <header className="border-b border-slate-200 bg-white/90 shadow-sm backdrop-blur-sm">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-4 lg:px-6">
         <div>
-          <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Realtime chat</p>
-          <p className="text-xl font-semibold text-slate-900">Welcome back, {user.name}</p>
+          <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
+            Realtime chat
+          </p>
+          <p className="text-xl font-semibold text-slate-900">
+            Welcome back, {user.name}
+          </p>
         </div>
         <button
           type="button"
@@ -22,5 +26,5 @@ export default function Header({ user, onLogout }: Props) {
         </button>
       </div>
     </header>
-  )
+  );
 }
