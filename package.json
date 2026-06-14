@@ -1,0 +1,23 @@
+{
+  "name": "chat-app",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "npm --prefix server run dev",
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "build": "npm --prefix client run build && npm --prefix server run build",
+    "seed": "npm --prefix server run seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  },
+  "allowScripts": {
+    "bcrypt@5.1.1": true,
+    "sharp@0.34.5": true
+  }
+}

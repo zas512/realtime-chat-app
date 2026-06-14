@@ -1,0 +1,24 @@
+{
+  "name": "chat-app-client",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^4.0.0",
+    "axios": "^1.0.0",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "socket.io-client": "^4.0.0",
+    "tailwindcss": "^3.0.0",
+    "zustand": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.17",
+    "typescript": "^5.0.0"
+  }
+}
