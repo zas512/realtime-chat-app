@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { config } from "../config";
+
+const JWT = process.env.JWT_SECRET;
 
 export function authMiddleware(
   req: Request & { userId?: string },
@@ -11,7 +12,7 @@ export function authMiddleware(
   if (!auth) return res.status(401).json({ message: "Missing token" });
   const token = auth.split(" ")[1];
   try {
-    const payload: any = jwt.verify(token, config.jwtSecret);
+    const payload: any = jwt.verify(token, JWT!);
     req.userId = payload.id;
     next();
   } catch (err) {

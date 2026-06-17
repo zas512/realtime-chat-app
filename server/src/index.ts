@@ -1,26 +1,47 @@
-import express from 'express'
-import http from 'http'
-import { Server as IOServer } from 'socket.io'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import mongoose from 'mongoose'
-import apiRoutes from './routes'
-import { initSocket } from './socket'
+import dotenv from "dotenv";
+dotenv.config();
 
-dotenv.config()
+import express from "express";
+import http from "node:http";
+import { Server as IOServer } from "socket.io";
+import cors from "cors";
+import apiRoutes from "./routes";
+import { connectDB } from "./db";
+import { initSocket } from "./socket";
 
-const app = express()
-app.use(cors())
-app.use(express.json())
-app.use('/api', apiRoutes)
+const app = express();
 
-const server = http.createServer(app)
-const io = new IOServer(server, { cors: { origin: '*' } })
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "*",
+    credentials: true
+  })
+);
+app.use(express.json());
+app.use("/", apiRoutes);
 
-initSocket(io)
+const server = http.createServer(app);
+const io = new IOServer(server, {
+  cors: {
+    origin: process.env.CLIENT_URL || "*",
+    credentials: true
+  }
+});
 
-const PORT = process.env.PORT || 4000
+initSocket(io);
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/chat-app').then(() => {
-  server.listen(PORT, () => console.log(`Server listening on ${PORT}`))
-}).catch((err) => console.error('Mongo error', err))
+const PORT = Number(process.env.PORT) || 4000;
+
+const startServer = async () => {
+  try {
+    await connectDB();
+    server.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  }
+};
+
+startServer();

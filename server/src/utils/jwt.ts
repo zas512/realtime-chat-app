@@ -1,10 +1,10 @@
-import jwt from 'jsonwebtoken'
-import { config } from '../config'
+import jwt from "jsonwebtoken";
 
+const JWT = process.env.JWT_SECRET;
 export function sign(payload: object) {
-  return jwt.sign(payload, config.jwtSecret)
+  return jwt.sign(payload, JWT!);
 }
 
 export function verify(token: string) {
-  return jwt.verify(token, config.jwtSecret)
+  return jwt.verify(token, JWT!);
 }

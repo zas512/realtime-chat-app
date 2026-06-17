@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { config } from "../config";
+
+const JWT = process.env.JWT_SECRET;
 
 export async function register(req: Request, res: Response) {
   const { name, email, password } = req.body;
@@ -13,7 +14,7 @@ export async function register(req: Request, res: Response) {
 
   const hashed = await bcrypt.hash(password, 10);
   const user = await User.create({ name, email, password: hashed });
-  const token = jwt.sign({ id: user._id }, config.jwtSecret);
+  const token = jwt.sign({ id: user._id }, JWT!);
   res.json({ user, token });
 }
 
@@ -26,6 +27,6 @@ export async function login(req: Request, res: Response) {
   const ok = await bcrypt.compare(password, user.password);
   if (!ok) return res.status(401).json({ message: "Invalid credentials" });
 
-  const token = jwt.sign({ id: user._id }, config.jwtSecret);
+  const token = jwt.sign({ id: user._id }, JWT!);
   res.json({ user, token });
 }
