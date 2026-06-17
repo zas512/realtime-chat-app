@@ -1,12 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
-
 import express from "express";
 import http from "node:http";
 import { Server as IOServer } from "socket.io";
 import cors from "cors";
 import apiRoutes from "./routes";
-import { connectDB } from "./db";
 import { initSocket } from "./socket";
 
 const app = express();
@@ -34,7 +32,6 @@ const PORT = Number(process.env.PORT) || 4000;
 
 const startServer = async () => {
   try {
-    await connectDB();
     server.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
