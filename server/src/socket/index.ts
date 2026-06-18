@@ -1,15 +1,46 @@
-import { Server } from 'socket.io'
-import { SocketEvents } from '../../../shared/constants/socketEvents'
+import { Server as IOServer } from "socket.io";
+import http from "node:http";
+import { verifyToken } from "../utils/jwt";
+import { registerSocketHandlers } from "./handlers";
 
-export function initSocket(io: Server) {
-  io.on('connection', (socket) => {
-    console.log('socket connected', socket.id)
+export const initSocket = (server: http.Server): IOServer => {
+  const io = new IOServer(server, {
+    cors: {
+      origin: process.env.CLIENT_URL,
+      credentials: true
+    }
+  });
 
-    socket.on(SocketEvents.MESSAGE, (payload: any) => {
-      io.to(payload.chatId).emit(SocketEvents.MESSAGE, payload)
-    })
+  io.use((socket, next) => {
+    try {
+      const cookie = socket.handshake.headers.cookie;
+      if (!cookie) {
+        console.log(`Socket ${socket.id} rejected — no cookie`);
+        return next(new Error("Not authenticated"));
+      }
+      const tokenMatch = /token=([^;]+)/.exec(cookie);
+      if (!tokenMatch) {
+        console.log(`Socket ${socket.id} rejected — no token in cookie`);
+        return next(new Error("Not authenticated"));
+      }
+      const decoded = verifyToken(tokenMatch[1]);
+      socket.data.user = decoded;
+      console.log(`Socket ${socket.id} authenticated — user ${decoded.id}`);
+      next();
+    } catch (err) {
+      console.log(
+        `Socket ${socket.id} rejected — error during authentication:`,
+        err
+      );
+      console.log(`Socket ${socket.id} rejected — invalid token`);
+      next(new Error("Invalid token"));
+    }
+  });
 
-    socket.on(SocketEvents.JOIN, (chatId: string) => socket.join(chatId))
-    socket.on(SocketEvents.LEAVE, (chatId: string) => socket.leave(chatId))
-  })
-}
+  io.on("connection", (socket) => {
+    console.log(`User ${socket.data.user.id} connected — socket ${socket.id}`);
+    registerSocketHandlers(io, socket);
+  });
+
+  return io;
+};
