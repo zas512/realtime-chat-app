@@ -1,5 +1,5 @@
 import "./globals.css";
-import React from "react";
+import type { ReactNode } from "react";
 
 export const metadata = {
   title: "Chat App"
@@ -8,7 +8,7 @@ export const metadata = {
 export default function RootLayout({
   children
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">

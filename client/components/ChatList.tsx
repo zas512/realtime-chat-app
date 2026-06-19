@@ -1,9 +1,10 @@
-import type { ChatDTO } from "../../shared/types";
+import type { ChatDTO } from "../types";
 
 type Props = {
   chats: ChatDTO[];
   activeChatId: string | null;
   onSelect: (chat: ChatDTO) => void;
+  onNewChat: () => void;
   loading: boolean;
 };
 
@@ -11,11 +12,12 @@ export default function ChatList({
   chats,
   activeChatId,
   onSelect,
+  onNewChat,
   loading
 }: Readonly<Props>) {
   return (
-    <aside className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="mb-4 flex items-center justify-between">
+    <aside className="p-4 bg-white border shadow-sm rounded-3xl border-slate-200">
+      <div className="flex items-center justify-between mb-4">
         <div>
           <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
             Chats
@@ -24,25 +26,33 @@ export default function ChatList({
             Your conversations
           </p>
         </div>
+        <button
+          type="button"
+          onClick={onNewChat}
+          className="px-4 py-2 text-sm font-semibold text-white transition rounded-full bg-slate-900 hover:bg-slate-700"
+        >
+          New chat
+        </button>
       </div>
 
       {loading && chats.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-slate-200 p-8 text-center text-slate-500">
+        <div className="p-8 text-center border border-dashed rounded-3xl border-slate-200 text-slate-500">
           Loading chats…
         </div>
       ) : chats.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-slate-200 p-8 text-center text-slate-500">
+        <div className="p-8 text-center border border-dashed rounded-3xl border-slate-200 text-slate-500">
           No chats available yet.
         </div>
       ) : (
         <div className="space-y-3">
           {chats.map((chat) => {
             const name =
-              chat.name || chat.members.map((member) => member.name).join(", ");
-            const isActive = chat._id === activeChatId;
+              chat.name ||
+              chat.members.map((member) => member.username).join(", ");
+            const isActive = chat.id === activeChatId;
             return (
               <button
-                key={chat._id}
+                key={chat.id}
                 type="button"
                 onClick={() => onSelect(chat)}
                 className={`flex w-full flex-col gap-1 rounded-3xl border px-4 py-4 text-left transition ${

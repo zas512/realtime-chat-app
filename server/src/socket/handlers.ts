@@ -99,6 +99,7 @@ export const registerSocketHandlers = (io: Server, socket: Socket): void => {
         });
         console.log(`Message sent by ${user.id} in chat ${chatId}`);
         io.to(chatId).emit("message:new", { message });
+        socket.emit("message:delivered", { messageId: message.id, chatId });
       } catch (err) {
         console.log(`message:send error: ${err}`);
         socket.emit("error", { message: "Failed to send message" });

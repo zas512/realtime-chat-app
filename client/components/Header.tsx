@@ -1,4 +1,4 @@
-import type { UserDTO } from "../../shared/types";
+import type { UserDTO } from '../types';
 
 type Props = {
   user: UserDTO;
@@ -14,7 +14,7 @@ export default function Header({ user, onLogout }: Readonly<Props>) {
             Realtime chat
           </p>
           <p className="text-xl font-semibold text-slate-900">
-            Welcome back, {user.name}
+            Welcome back, {user.username}
           </p>
         </div>
         <button
